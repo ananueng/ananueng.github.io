@@ -54,7 +54,92 @@
         <p>This is the third section of the website.</p>
     </section>
 </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P-Value Simulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #container {
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>P-Value Simulation</h1>
+        <button onclick="simulate()">Run Simulation</button>
+        <p>Generated data: <span id="data"></span></p>
+        <p>Sample mean: <span id="mean"></span></p>
+        <p>Sample size: <span id="sampleSize"></span></p>
+        <p>T-Statistic: <span id="tStatistic"></span></p>
+        <p>P-Value: <span id="pValue"></span></p>
+    </div>
 
+    <script>
+        function simulate() {
+            // Simulate data
+            const data = generateRandomData(20, 50, 10);
+
+            // Calculate sample mean
+            const sampleMean = calculateMean(data);
+
+            // Calculate t-statistic
+            const tStatistic = (sampleMean - 50) / (calculateStandardDeviation(data) / Math.sqrt(data.length));
+
+            // Calculate p-value
+            const pValue = calculatePValue(tStatistic, data.length - 1);
+
+            // Display results
+            document.getElementById("data").textContent = data.join(", ");
+            document.getElementById("mean").textContent = sampleMean.toFixed(2);
+            document.getElementById("sampleSize").textContent = data.length;
+            document.getElementById("tStatistic").textContent = tStatistic.toFixed(2);
+            document.getElementById("pValue").textContent = pValue.toFixed(4);
+        }
+
+        function generateRandomData(min, max, count) {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                data.push(Math.random() * (max - min) + min);
+            }
+            return data;
+        }
+
+        function calculateMean(data) {
+            const sum = data.reduce((acc, val) => acc + val, 0);
+            return sum / data.length;
+        }
+
+        function calculateStandardDeviation(data) {
+            const mean = calculateMean(data);
+            const squaredDiffs = data.map(val => Math.pow(val - mean, 2));
+            const variance = squaredDiffs.reduce((acc, val) => acc + val, 0) / (data.length - 1);
+            return Math.sqrt(variance);
+        }
+
+        function calculatePValue(t, df) {
+            // This is a simplified approach to calculating the p-value using the t-distribution.
+            // In a real application, you would use a proper statistical library.
+            const alpha = 0.05; // Significance level
+            const tcritical = 1.645; // For a two-tailed test with 19 degrees of freedom (alpha/2 = 0.025)
+            const pValue = 2 * (1 - cumulativeDistribution(t, df));
+
+            return pValue;
+        }
+
+        function cumulativeDistribution(t, df) {
+            // This function should implement the cumulative distribution function (CDF) of the t-distribution.
+            // For this example, we're using a simplified formula.
+            return 0.5 + 0.5 * Math.erf(t / Math.sqrt(2));
+        }
+    </script>
+</body>
 <body>
   <h1>Anan</h1>
   <p>Welcome to my website!</p>
